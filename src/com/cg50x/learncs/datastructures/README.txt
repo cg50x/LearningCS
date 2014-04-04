@@ -1,0 +1,23 @@
+Data structures to implement:
+
+- List
+  - ArrayList
+  - LinkedList
+- Stack
+  - ArrayStack
+  - LinkedListStack
+- Queue
+  - ArrayQueue
+  - LinkedListQueue
+  - PriorityQueue
+- BinarySearchTree
+- NaryTree
+- TrieTree
+- AvlTree
+- RedBlackTree
+- SplayTree
+- Graph (object and pointer)
+- Graph (matrix)
+- Graph (adjacency list)
+- Hash table (separate chaining)
+- Hash table (open addressing)
