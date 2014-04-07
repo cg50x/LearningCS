@@ -4,6 +4,7 @@
 package com.cg50x.learncs.datastructures;
 
 import static org.junit.Assert.*;
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -22,12 +23,12 @@ public class ArrayListTest {
 		ArrayList<Integer> aList = new ArrayList<Integer>();
 		
 		// Check size before adding
-		assertEquals("New ArrayList size should be 0", aList.size(), 0);
+		assertEquals("New ArrayList size should be 0", 0, aList.size());
 		
 		aList.add(new Integer(5));
 		
 		// Check size after adding
-		assertEquals("Size should be 1 after adding", aList.size(), 1);
+		assertEquals("Size should be 1 after adding", 1, aList.size());
 	}
 
 	/**
@@ -38,20 +39,25 @@ public class ArrayListTest {
 		ArrayList<Integer> aList = new ArrayList<Integer>();
 		
 		// Check size before adding
-		assertEquals("New ArrayList size should be 0", aList.size(), 0);
+		assertEquals("New ArrayList size should be 0", 0, aList.size());
 		
 		// Add three numbers
 		aList.add(1);
 		aList.add(3);
 		
 		// Check size after adding
-		assertEquals("Adding 1 and 3", aList.size(), 2);
+		assertEquals("Adding 1 and 3", 2, aList.size());
 		
 		// Add 2 in between
 		aList.add(1, 2);
 		
 		// Check size after adding
-		assertEquals("Added 2 in between", aList.size(), 3);
+		assertEquals("Added 2 in between", 3, aList.size());
+		
+		// Check contents
+		assertEquals("1 at index 0", new Integer(1), aList.get(0));
+		assertEquals("2 at index 1", new Integer(2), aList.get(1));
+		assertEquals("3 at index 2", new Integer(3), aList.get(2));
 	}
 
 	/**
@@ -59,7 +65,17 @@ public class ArrayListTest {
 	 */
 	@Test
 	public void testClear() {
-		fail("Not yet implemented");
+		ArrayList<Integer> aList = new ArrayList<Integer>();
+		aList.add(1);
+		aList.add(1);
+		aList.add(1);
+		aList.add(1);
+		aList.add(1);
+		aList.add(1);
+		aList.add(1);
+		assertEquals("Size is 7 after adding", 7, aList.size());
+		aList.clear();
+		assertEquals("Clearing after adding sets size to 0", 0, aList.size());
 	}
 
 	/**
@@ -67,7 +83,17 @@ public class ArrayListTest {
 	 */
 	@Test
 	public void testContains() {
-		fail("Not yet implemented");
+		ArrayList<Integer> aList = new ArrayList<Integer>();
+		
+		// Does contains return false if element is not added? 
+		Integer elemToAdd = new Integer(1);
+		assertFalse(aList.contains(elemToAdd));
+		
+		// Does contains return true after element is added?
+		aList.add(elemToAdd);
+		assertTrue(aList.contains(elemToAdd));
+		
+		// TODO: element is removed -> false
 	}
 
 	/**
