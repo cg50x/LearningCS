@@ -62,14 +62,14 @@ public class ArrayList<E> implements List<E>{
 		}
 		
 		// Shift numbers up starting from index
-		Object temp;
-		for (int ind = index+1; ind < size; ind++) {
-			temp = arrayStorage[ind];
-			arrayStorage[ind] = arrayStorage[ind-1];
+		Object temp = element;
+		Object temp2;
+		for (int ind = index; ind < size+1; ind++) {
+			temp2 = arrayStorage[ind];
+			arrayStorage[ind] = temp;
+			temp = temp2;			
 		}
 		
-		// Add element to specified index
-		arrayStorage[index] = element;
 		size++;
 	}
 
