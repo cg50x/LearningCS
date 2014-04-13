@@ -59,35 +59,100 @@ public class BinarySearchTree<E extends Comparable<E>> implements Tree<E> {
 	public boolean remove(E value) {
 		// Find the value!
 		
-		// Iterate through the tree until curr pointer
-		// points to parent of node to be removed.
+		// If root is to be deleted,
+		if (root.value.compareTo(value) == 0) {
+			root = removeHelper(root);
+		}
 		
-		// if nodeToRemove has no children
-		// remove it
+		// Remove the node
+		removeHelp
 		
-		// if nodeToRemove doesn't have a left
-		// replace nodeToRemove with it's right subtree's root
-		
-		// if nodeToRemove doesn't have a right
-		// replace nodeToRemove with its left subtree root
-		
-		/*
-		 * if nodeToRemove has both
-		 * let there be a b pointers
-		 * a points to nodeToRemove.left
-		 * b points to nodeToRemove.left
-		 * while b.right isn't null
-		 *   a = b
-		 *   b = b.right
-		 * b will hit a node that has no right child
-		 * a will be the parent of b unless b had no 
-		 * 
-		 */
-		// if nodeToRemove has both
-		// ltb a b pointers
-		// a points to nodeToRemove.left
-		//
 		return false;
+	}
+	
+	private BinaryTreeNode<E> getNodeWithValue(BinaryTreeNode<E> currNode, E value) {
+		if (currNode == null) {
+			return null;
+		} else if (value.compareTo(currNode.value) > 0) {
+			return getNodeWithValue(currNode.right, value);
+		} else if (value.compareTo(currNode.value) < 0) {
+			return getNodeWithValue(currNode.left, value);
+		} else {
+			return currNode;
+		}
+	}
+	
+	/**
+	 * Removes given node from the tree
+	 * @param node
+	 * @return A pointer to the subtree with the element deleted
+	 */
+	private BinaryTreeNode<E> removeHelper(BinaryTreeNode<E> currNode, E value) {
+		
+		if (currNode == null) {
+			return null;
+		}
+		
+		if (currNode.value.compareTo(value) < 0) {
+			currNode.left = removeHelper()
+		}
+		
+		// TODO: what if either currNode.value is null??
+		
+		// If node doesn't have children, return null
+		// so that the parent detaches this node
+		if (currNode.left == null && currNode.right == null) {
+			return null;
+		} else if (currNode.left == null) {
+			// If node only has a right child, return it
+			return currNode.right;
+		} else if (currNode.right == null) {
+			// If node only has a left child, return it
+			return currNode.left;
+		} else {
+			
+			// Get the predecessor node
+			// Assume current node's left child will be the 
+			// predecessor node (in case left child has no right child)
+			BinaryTreeNode<E> predNode = currNode.left;
+			BinaryTreeNode<E> parentToPred = currNode;
+			
+			// Find left child's right most child
+			while (predNode.right != null && predNode.right.right != null) {
+				predNode = predNode.right;
+			}
+			
+			// If pred node's right child is null, then pred node hasn't 
+			// moved from current node's left child. Otherwise, pred node is pointing
+			// to parent of actual pred node
+			if (predNode.right != null) {
+				parentToPred = predNode;
+				predNode = predNode.right;
+			}
+			
+			// Set current node's value to predecessor's value
+			currNode.value = predNode.value;
+			
+			// delete predecessor node
+			parentToPred.right = removeHelper(predNode);
+		}
+		
+		return currNode;
+	}
+	
+	private BinaryTreeNode<E> getParentToPredNode(BinaryTreeNode<E> node) {
+		if (node == null || node.left == null) {
+			return null;
+		}
+		
+		BinaryTreeNode<E> result = node.left;
+		
+		// Get the right most child
+		while (result.right != null) {
+			result = result.right;
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -138,20 +203,46 @@ public class BinarySearchTree<E extends Comparable<E>> implements Tree<E> {
 
 	@Override
 	public String getPreorder() {
-		// TODO Auto-generated method stub
-		return null;
+		return getPreorderHelper(root);
+	}
+	
+	private String getPreorderHelper(BinaryTreeNode<E> node) {
+		if (node == null) {
+			return "";
+		}
+		
+		return node.toString() 
+			+  getPreorderHelper(node.left) 
+			+  getPreorderHelper(node.right);
 	}
 
 	@Override
 	public String getPostorder() {
-		// TODO Auto-generated method stub
-		return null;
+		return getPostorderHelper(root);
+	}
+	
+	private String getPostorderHelper(BinaryTreeNode<E> node) {
+		if (node == null) {
+			return "";
+		}
+		
+		return getPostorderHelper(node.left) 
+			+  getPostorderHelper(node.right)
+			+  node.toString();
 	}
 
 	@Override
 	public String getInorder() {
-		// TODO Auto-generated method stub
-		return null;
+		return getInorderHelper(root);
 	}
 
+	private String getInorderHelper(BinaryTreeNode<E> node) {
+		if (node == null) {
+			return "";
+		}
+		
+		return getInorderHelper(node.left)
+			+  node.toString()
+			+  getInorderHelper(node.right);
+	}
 }
