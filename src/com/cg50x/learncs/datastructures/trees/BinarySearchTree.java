@@ -57,17 +57,10 @@ public class BinarySearchTree<E extends Comparable<E>> implements Tree<E> {
 
 	@Override
 	public boolean remove(E value) {
-		// Find the value!
 		
-		// If root is to be deleted,
-		if (root.value.compareTo(value) == 0) {
-			root = removeHelper(root);
-		}
+		root = removeHelper(root, value);
 		
-		// Remove the node
-		removeHelp
-		
-		return false;
+		return true;
 	}
 	
 	private BinaryTreeNode<E> getNodeWithValue(BinaryTreeNode<E> currNode, E value) {
@@ -83,7 +76,7 @@ public class BinarySearchTree<E extends Comparable<E>> implements Tree<E> {
 	}
 	
 	/**
-	 * Removes given node from the tree
+	 * Remove value from subtree at the given root node
 	 * @param node
 	 * @return A pointer to the subtree with the element deleted
 	 */
@@ -93,66 +86,71 @@ public class BinarySearchTree<E extends Comparable<E>> implements Tree<E> {
 			return null;
 		}
 		
-		if (currNode.value.compareTo(value) < 0) {
-			currNode.left = removeHelper()
+		if (currNode.value.compareTo(value) > 0) {
+			currNode.left = removeHelper(currNode.left, value);
+			return currNode;
 		}
 		
-		// TODO: what if either currNode.value is null??
+		if (currNode.value.compareTo(value) < 0) {
+			currNode.right = removeHelper(currNode.right, value);
+			return currNode;
+		}
 		
-		// If node doesn't have children, return null
-		// so that the parent detaches this node
+		// If the current node contains our value, delete it
+		
+		// IF:   Node has no children
+		// THEN: Delete it by returning null
 		if (currNode.left == null && currNode.right == null) {
 			return null;
-		} else if (currNode.left == null) {
-			// If node only has a right child, return it
+		}
+		
+		// IF:   Node only has a right child
+		// THEN: Delete this node by returning the right child
+		if (currNode.left == null) {
 			return currNode.right;
-		} else if (currNode.right == null) {
-			// If node only has a left child, return it
+		}
+		
+		// IF:   Node only has a left child
+		// THEN: Delete node by returning the left child
+		if (currNode.right == null) {
 			return currNode.left;
-		} else {
-			
-			// Get the predecessor node
-			// Assume current node's left child will be the 
-			// predecessor node (in case left child has no right child)
-			BinaryTreeNode<E> predNode = currNode.left;
-			BinaryTreeNode<E> parentToPred = currNode;
-			
-			// Find left child's right most child
-			while (predNode.right != null && predNode.right.right != null) {
-				predNode = predNode.right;
-			}
-			
-			// If pred node's right child is null, then pred node hasn't 
-			// moved from current node's left child. Otherwise, pred node is pointing
-			// to parent of actual pred node
-			if (predNode.right != null) {
-				parentToPred = predNode;
-				predNode = predNode.right;
-			}
-			
-			// Set current node's value to predecessor's value
-			currNode.value = predNode.value;
-			
-			// delete predecessor node
-			parentToPred.right = removeHelper(predNode);
 		}
 		
-		return currNode;
-	}
+		// IF:   Node has two children
+		// THEN: Replace node's value with inorder predecessor node's value and 
+		//       recursively remove the inorder predecessor node
+
+		/*
+		 * The _inorder predecessor node_ is the node that would come directly 
+		 * before the current node if all nodes were listed in inorder sequence
+		 */
+
+		// Get the predecessor node
+		// Assume current node's left child will be the 
+		// predecessor node (in case left child has no right child)
+		BinaryTreeNode<E> predNode = currNode.left;
+		BinaryTreeNode<E> parentToPred = currNode;
+		
+		// Find left child's right most child
+		while (predNode.right != null && predNode.right.right != null) {
+			predNode = predNode.right;
+		}
+		
+		// If pred node's right child is null, then pred node hasn't 
+		// moved from current node's left child. Otherwise, pred node is pointing
+		// to parent of actual pred node
+		if (predNode.right != null) {
+			parentToPred = predNode;
+			predNode = predNode.right;
+		}
+		
+		// Set current node's value to predecessor's value
+		currNode.value = predNode.value;
+		
+		// delete predecessor node
+		parentToPred.right = removeHelper(predNode, predNode.value);
 	
-	private BinaryTreeNode<E> getParentToPredNode(BinaryTreeNode<E> node) {
-		if (node == null || node.left == null) {
-			return null;
-		}
-		
-		BinaryTreeNode<E> result = node.left;
-		
-		// Get the right most child
-		while (result.right != null) {
-			result = result.right;
-		}
-		
-		return result;
+		return currNode;
 	}
 
 	@Override
@@ -176,7 +174,17 @@ public class BinarySearchTree<E extends Comparable<E>> implements Tree<E> {
 		if (node == null) {
 			return 0;
 		}
-		return 1 + Math.max(heightHelper(node.left), heightHelper(node.right));
+		
+		int leftHeight = 0, rightHeight = 0;
+		if (node.left != null) {
+			leftHeight = 1 + heightHelper(node.left);
+		}
+		
+		if (node.right != null) {
+			rightHeight = 1 + heightHelper(node.right);
+		}
+		
+		return Math.max(leftHeight, rightHeight);
 	}
 
 	@Override
